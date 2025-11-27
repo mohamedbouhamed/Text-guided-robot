@@ -65,5 +65,10 @@ results.txt
 test_results_*.txt
 *.log
 
+# API Keys and secrets
+.env
+.env.local
+*.key
+
 # Pygame
 *.pyc
