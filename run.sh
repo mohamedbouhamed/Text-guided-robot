@@ -34,6 +34,13 @@ fi
 echo ""
 echo "Lancement du robot virtuel..."
 echo "Python utilisé: $PYTHON ($($PYTHON --version))"
+
+# Charger les variables d'environnement depuis .env si le fichier existe
+if [ -f .env ]; then
+    echo "Chargement de la configuration depuis .env..."
+    export $(cat .env | grep -v '^#' | xargs)
+fi
+
 echo ""
 
 "$PYTHON" main.py "$@"
