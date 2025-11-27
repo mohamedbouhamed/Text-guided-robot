@@ -18,8 +18,39 @@ Un robot simulé en 2D qui comprend et exécute des instructions en langage natu
 
 - Python 3.7 ou supérieur
 - pip
+- **macOS** : Homebrew (pour installer SDL2)
 
 ### Installation des dépendances
+
+#### Sur macOS
+
+Pygame nécessite SDL2. Installez-le d'abord avec Homebrew :
+
+```bash
+# Installer SDL2 et ses dépendances (y compris pkg-config)
+brew install pkg-config sdl2 sdl2_image sdl2_mixer sdl2_ttf portmidi
+
+# Ensuite installer les packages Python
+pip install -r requirements.txt
+```
+
+**Méthode rapide avec le script d'installation :**
+
+```bash
+./install.sh
+```
+
+#### Sur Linux
+
+```bash
+# Ubuntu/Debian
+sudo apt-get install python3-dev python3-numpy libsdl2-dev libsdl2-image-dev \
+    libsdl2-mixer-dev libsdl2-ttf-dev libfreetype6-dev libportmidi-dev
+
+pip install -r requirements.txt
+```
+
+#### Sur Windows
 
 ```bash
 pip install -r requirements.txt
