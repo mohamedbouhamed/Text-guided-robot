@@ -66,8 +66,14 @@ Les dépendances incluent :
 
 Lancez le programme principal :
 
+**Méthode recommandée (détecte automatiquement le bon Python) :**
 ```bash
-python main.py
+./run.sh
+```
+
+**Ou directement :**
+```bash
+python3 main.py
 ```
 
 Le programme vous demande de choisir un environnement :
@@ -102,8 +108,14 @@ Le robot comprend des commandes en français et en anglais :
 
 Pour exécuter les scénarios de test automatiques :
 
+**Méthode recommandée :**
 ```bash
-python tests/test_scenarios.py
+./run_tests.sh
+```
+
+**Ou directement :**
+```bash
+python3 tests/test_scenarios.py
 ```
 
 Ce script :

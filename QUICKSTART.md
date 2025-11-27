@@ -12,8 +12,16 @@ Les dépendances sont déjà installées sur ce système :
 
 ### Mode interactif
 
+**Méthode recommandée (détecte automatiquement le bon Python) :**
 ```bash
-python main.py
+./run.sh
+```
+
+**Ou directement avec Python :**
+```bash
+python3 main.py
+# Ou avec Python 3.11
+/opt/homebrew/bin/python3.11 main.py
 ```
 
 Ensuite :
@@ -25,10 +33,14 @@ Ensuite :
 
 ### Mode test automatique
 
-Pour lancer les tests automatiques sur tous les environnements :
-
+**Méthode recommandée :**
 ```bash
-python tests/test_scenarios.py
+./run_tests.sh
+```
+
+**Ou directement :**
+```bash
+python3 tests/test_scenarios.py
 ```
 
 ## Exemples de commandes
