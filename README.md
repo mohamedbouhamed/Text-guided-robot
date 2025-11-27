@@ -6,6 +6,8 @@ Un robot simulé en 2D qui comprend et exécute des instructions en langage natu
 
 - 🤖 Robot simulé dans un environnement 2D (Pygame)
 - 💬 Compréhension d'instructions en langage naturel (français et anglais)
+- 🤖 **Parser LLM intelligent** avec Gemini pour commandes complexes
+- 🎯 **Navigation multi-cibles** avec waypoints
 - 🧭 Planification de chemin avec algorithme A*
 - 🎯 Navigation vers des cibles colorées (carrés et cercles)
 - 🧠 Raisonnement Chain-of-Thought avant l'action
@@ -59,8 +61,29 @@ pip install -r requirements.txt
 Les dépendances incluent :
 - `pygame` : Pour la simulation graphique 2D
 - `numpy` : Pour les calculs mathématiques
+- `google-generativeai` : Pour le parser LLM intelligent (optionnel)
 
 ## Utilisation
+
+### Configuration du parser LLM (optionnel)
+
+Pour activer le parser LLM intelligent avec Gemini :
+
+1. Obtenez une clé API gratuite sur [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Configurez la clé API :
+
+```bash
+# Méthode 1 : Créer un fichier .env (recommandé)
+cp .env.example .env
+# Éditez .env et ajoutez votre clé API
+
+# Méthode 2 : Variable d'environnement
+export GEMINI_API_KEY='votre_clé_ici'
+```
+
+Le programme détectera automatiquement la clé et activera le parser LLM !
+
+**Sans clé API**, le programme utilisera le parser simple (commandes basiques uniquement).
 
 ### Mode interactif
 
@@ -85,7 +108,9 @@ Ensuite, entrez des commandes textuelles pour guider le robot !
 
 ### Exemples de commandes
 
-Le robot comprend des commandes en français et en anglais :
+#### Avec parser simple (sans clé API)
+
+Le robot comprend des commandes basiques en français et en anglais :
 
 **Français :**
 - "Va vers le carré rouge"
@@ -98,6 +123,18 @@ Le robot comprend des commandes en français et en anglais :
 - "Go to the red square"
 - "Move to the blue circle"
 - "Reach the green object"
+
+#### Avec parser LLM (avec clé API Gemini)
+
+Le parser LLM comprend des commandes beaucoup plus complexes :
+
+**Commandes multi-cibles avec waypoints :**
+- "Va au carré rouge en passant par le cercle bleu"
+- "Rejoins le cercle vert puis le carré jaune"
+- "Passe d'abord par le cercle bleu, puis va au carré rouge, et finis au cercle vert"
+- "Atteins le bleu" (plus naturel, sans structure rigide)
+
+Le LLM distingue automatiquement les **waypoints** (points de passage) des **cibles finales** !
 
 **Commandes spéciales :**
 - `reset` : Réinitialise la position du robot
@@ -131,27 +168,36 @@ Text-guided-robot/
 ├── README.md              # Documentation
 ├── requirements.txt       # Dépendances Python
 ├── .gitignore            # Fichiers à ignorer par Git
+├── .env.example          # Template pour configuration API
 ├── main.py               # Point d'entrée principal
+├── run.sh                # Script de lancement intelligent
+├── install.sh            # Script d'installation (macOS)
 ├── src/                  # Code source
 │   ├── __init__.py       # Package Python
 │   ├── environment.py    # Environnement de simulation 2D
 │   ├── robot.py          # Classe Robot avec mouvement
-│   ├── nlp_parser.py     # Parsing des commandes textuelles
+│   ├── nlp_parser.py     # Parser simple (règles)
+│   ├── llm_parser.py     # Parser LLM (Gemini)
 │   ├── pathfinding.py    # Algorithme A* pour planification
 │   └── evaluator.py      # Système d'évaluation
-└── tests/                # Tests
-    └── test_scenarios.py # Scénarios de test automatiques
+├── tests/                # Tests
+│   └── test_scenarios.py # Scénarios de test automatiques
+└── test_llm.py           # Test du parser LLM
 ```
 
 ## Flux d'exécution
 
 1. **Parsing de commande** : L'utilisateur saisit une commande textuelle
-2. **Analyse NLP** : Le parser extrait l'action, la couleur et la forme
-3. **Raisonnement** : Le robot génère des étapes de raisonnement (Chain-of-Thought)
-4. **Identification de cible** : L'environnement trouve l'objet correspondant
-5. **Planification** : L'algorithme A* calcule le chemin optimal
-6. **Navigation** : Le robot suit le chemin waypoint par waypoint
-7. **Évaluation** : Le système mesure le succès et les performances
+2. **Analyse intelligente** :
+   - Avec LLM : Gemini analyse et extrait les cibles multiples avec waypoints
+   - Sans LLM : Parser simple extrait une seule cible (couleur + forme)
+3. **Planification multi-cibles** : Si plusieurs cibles, création d'un plan séquentiel
+4. **Raisonnement** : Le robot génère des étapes de raisonnement (Chain-of-Thought)
+5. **Identification de cible** : L'environnement trouve les objets correspondants
+6. **Planification** : L'algorithme A* calcule le chemin optimal
+7. **Navigation** : Le robot suit le chemin waypoint par waypoint
+8. **Transition** : Passage automatique à la cible suivante si waypoints
+9. **Évaluation** : Le système mesure le succès et les performances
 
 ## Composants détaillés
 
@@ -175,11 +221,21 @@ Représente le robot virtuel :
 
 ### NLP Parser (nlp_parser.py)
 
-Parse les commandes textuelles :
+Parser simple basé sur des règles :
 - Extraction de couleur, forme, action
 - Support français et anglais
 - Système de confiance
 - Validation de commandes
+- Une seule cible par commande
+
+### LLM Parser (llm_parser.py)
+
+Parser intelligent utilisant Gemini :
+- Compréhension avancée du langage naturel
+- Support multi-cibles avec waypoints
+- Distinction automatique waypoints/cibles finales
+- Fallback automatique vers parser simple en cas d'erreur
+- Format de sortie structuré avec confiance
 
 ### PathFinder (pathfinding.py)
 
@@ -248,13 +304,14 @@ Cible atteinte avec succès !
 ## Extensions possibles
 
 - Ajouter plus de formes (triangles, pentagones)
-- Support de plusieurs cibles dans une commande
+- ✅ ~~Support de plusieurs cibles dans une commande~~ (Implémenté avec LLM parser)
+- ✅ ~~Utilisation de modèles LLM pour parsing avancé~~ (Implémenté avec Gemini)
 - Objets mobiles dans l'environnement
-- Commandes plus complexes (conditions, séquences)
+- Commandes conditionnelles ("si le chemin est bloqué, va au vert")
 - Mode multijoueur avec plusieurs robots
 - Enregistrement vidéo des simulations
 - Interface web avec WebSocket
-- Utilisation de modèles LLM pour parsing avancé
+- Fine-tuning du LLM pour commandes spécialisées
 
 ## Auteur
 
