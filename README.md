@@ -89,15 +89,17 @@ Le programme détectera automatiquement la clé et activera le parser LLM !
 
 Lancez le programme principal :
 
-**Méthode recommandée (détecte automatiquement le bon Python) :**
-```bash
-./run.sh
-```
-
-**Ou directement :**
 ```bash
 python3 main.py
 ```
+
+Le fichier `.env` est chargé automatiquement ! Si tu as une clé API Gemini configurée, le parser LLM sera activé automatiquement.
+
+**Alternative (détection automatique du bon Python sur macOS) :**
+```bash
+./run.sh
+```
+Utile si tu as plusieurs versions de Python installées.
 
 Le programme vous demande de choisir un environnement :
 1. **Simple** : Environnement avec quelques obstacles
